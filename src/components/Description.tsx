@@ -12,15 +12,16 @@ const Description: React.FC<DescriptionProps> = ({ theme }) => {
   const ELEMENTS = [...PROJECTS, ...BLOGS];
   const [element, setElement] = useState<string>("");
   const { id } = useParams();
+  
   useEffect(() => {
     if (!id) return;
 
     const ele = ELEMENTS.find((e) => e.id === id);
 
     if (ele?.src) {
-      import(/* @vite-ignore */ `${ele.src}?raw`)
-        .then((mod) => setElement(mod.default))
-        .catch(() => setElement("Failed to load markdown file."));
+      setElement(ele.src);
+    } else {
+      setElement("Content not found.");
     }
   }, [id]);
 
