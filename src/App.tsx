@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import Navbar from "./components/Navbar";
+import { Route, Routes } from "react-router";
+import Hero from "./components/Hero";
+import Projects from "./components/Projects";
+import Blogs from "./components/Blogs";
+import Description from "./components/Description";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [theme, setTheme] = useState<string>(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+
+  useEffect(() => {
+    const isDark =
+      theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const handleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main className="w-full min-h-dvh bg-zinc-100 dark:bg-[#1C1E21] text-black dark:text-white">
+      <Navbar theme={theme} handleTheme={handleTheme} />
+      <Routes>
+        <Route path="/" element={<Hero />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:id" element={<Description theme={theme} />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<Description theme={theme} />} />
+      </Routes>
+    </main>
+  );
 }
 
-export default App
+export default App;
