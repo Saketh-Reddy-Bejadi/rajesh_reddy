@@ -18,7 +18,7 @@ const Description: React.FC<DescriptionProps> = ({ theme }) => {
     const ele = ELEMENTS.find((e) => e.id === id);
 
     if (ele?.src) {
-      import(`../../public${ele.src}`)
+      import(/* @vite-ignore */ `${ele.src}?raw`)
         .then((mod) => setElement(mod.default))
         .catch(() => setElement("Failed to load markdown file."));
     }
